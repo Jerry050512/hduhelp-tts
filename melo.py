@@ -1,5 +1,6 @@
 from MeloTTS.melo.api import TTS
 from pathlib import Path
+import os
 
 class Melo:
     def __init__(self):
@@ -44,6 +45,8 @@ class Melo:
             >>> melo.load()  # Ensure model is loaded
             >>> melo.infer("Hello, world!", speaker_id=1, speed=1.2, audio_name="greeting")
         '''
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
         if self.model is None:
             raise UserWarning("Model not loaded. Run Melo.load() first.")
         
@@ -64,4 +67,7 @@ class Melo:
 if __name__ == "__main__":
     model = Melo()
     model.load()
-    model.infer("Hello, world!", audio_name="hello_world")
+    for i in range(10):
+        model.infer(f"Hello, world! {i}th sentence.", audio_name="hello_world")
+    model.load('ZH')
+    model.infer("你好，我是MeloTTS生成的语音。")
