@@ -1,0 +1,67 @@
+from MeloTTS.melo.api import TTS
+from pathlib import Path
+
+class Melo:
+    def __init__(self):
+        self.model: TTS | None = None
+        self.speaker_ids: dict | None = None
+        self.sample_rate = 44100
+        self.output_dir = Path("assets/tts_audio")
+
+    def load(self, language='EN', device='auto'):
+        self.model = TTS(language=language, device=device)
+        self.speaker_ids = self.model.hps.data.spk2id
+        self.sample_rate = self.model.hps.data.sampling_rate
+
+    def infer(
+            self, 
+            text: str, 
+            speaker_id: int | None = None, 
+            speed=1.0, 
+            refine_prompt: str | None = None, 
+            audio_name: str | None = None
+        ):
+        '''
+        Generate audio from text using MeloTTS.
+                
+        Args:
+            text (str): The input text to be converted into speech.
+            speaker_id (int | None, optional): The ID of the speaker to use. If None, the default speaker will be selected.
+            speed (float, optional): The speed of speech synthesis. Should be between 0.3 and 3.0. Defaults to 1.0.
+            refine_prompt (str | None, optional): Not supported in MeloTTS. If provided, a UserWarning will be raised.
+            audio_name (str | None, optional): The name of the output audio file (without extension). If None, the output will not be saved to a file.
+        
+        Returns:
+            None: The synthesized speech is directly processed by the model.
+        
+        Raises:
+            UserWarning: If the model is not loaded before inference.
+            UserWarning: If `refine_prompt` is provided, as it is not supported.
+            AssertionError: If `speed` is not within the range of 0.3 to 3.0.
+        
+        Example:
+            >>> melo = Melo()
+            >>> melo.load()  # Ensure model is loaded
+            >>> melo.infer("Hello, world!", speaker_id=1, speed=1.2, audio_name="greeting")
+        '''
+        if self.model is None:
+            raise UserWarning("Model not loaded. Run Melo.load() first.")
+        
+        if refine_prompt is not None:
+            raise UserWarning("MeloTTS does not support refine_prompt.")
+        
+        if speaker_id is None:
+            speaker = list(self.speaker_ids.keys())[0]
+            speaker_id = list(self.speaker_ids.values())[0]
+            print(f"Speaker ID not provided, using default speaker: {speaker}")
+        assert 0.3 <= speed <= 3.0, "Speed should be between 0.3 and 3.0"
+        if audio_name is None:
+            output_path = None
+        else:
+            output_path = self.output_dir / f"{audio_name}.wav"
+        return self.model.tts_to_file(text, speaker_id, speed=speed, output_path=output_path)
+    
+if __name__ == "__main__":
+    model = Melo()
+    model.load()
+    model.infer("Hello, world!", audio_name="hello_world")
