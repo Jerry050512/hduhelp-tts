@@ -7,7 +7,7 @@ class Melo:
         self.model: TTS | None = None
         self.speaker_ids: dict | None = None
         self.sample_rate = 44100
-        self.output_dir = Path("assets/tts_audio")
+        self.output_dir = Path("assets/output/tts_audio")
 
     def load(self, language='EN', device='auto'):
         self.model = TTS(language=language, device=device)
