@@ -1,6 +1,7 @@
 from MeloTTS.melo.api import TTS
 from pathlib import Path
 import os
+import torch
 
 class Melo:
     def __init__(self):
@@ -8,11 +9,25 @@ class Melo:
         self.speaker_ids: dict | None = None
         self.sample_rate = 44100
         self.output_dir = Path("assets/output/tts_audio")
+        self.language: str | None = None
 
     def load(self, language='EN', device='auto'):
         self.model = TTS(language=language, device=device)
         self.speaker_ids = self.model.hps.data.spk2id
         self.sample_rate = self.model.hps.data.sampling_rate
+        self.language = language
+    
+    def unload(self):
+        if self.model is not None:
+            if torch.cuda.is_available(): # check if cuda is available
+                self.model.model.cpu() # move model to cpu if it is on cuda.
+                torch.cuda.empty_cache() # clear cache.
+            del self.model
+            self.model = None
+            self.speaker_ids = None # clear speaker ids
+            print("Model unloaded.")
+        else:
+            print("Model was not loaded, nothing to unload.")
 
     def infer(
             self, 
