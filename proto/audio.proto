@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package proto;
+
+service AudioService {
+  rpc AddUserVoice(AddUserVoiceRequest) returns (AddUserVoiceResponse);
+  rpc TTS(TTSRequest) returns (TTSResponse);
+  rpc VoiceConversion(VoiceConversionRequest) returns (VoiceConversionResponse);
+  rpc ASR(ASRRequest) returns (ASRResponse);
+}
+
+message AddUserVoiceRequest {
+  repeated string audio_list = 1;
+}
+
+message AddUserVoiceResponse {
+  string voice_filename = 1;
+}
+
+message TTSRequest {
+  string text = 1;
+  string language = 2;
+  string engine = 3;
+  optional int32 speaker_id = 4;
+  float speed = 5;
+  optional string refine_prompt = 6;
+}
+
+message TTSResponse {
+  string audio_filename = 1;
+}
+
+message VoiceConversionRequest {
+  string src_audio_filename = 1;
+  string ref_voice_filename = 2;
+}
+
+message VoiceConversionResponse {
+  string converted_audio_filename = 1;
+}
+
+message ASRRequest {
+  string audio_filename = 1;
+}
+
+message ASRResponse {
+  string srt_filename = 1;
+}
