@@ -35,22 +35,22 @@ class AudioServiceStub(object):
             channel: A grpc.Channel.
         """
         self.AddUserVoice = channel.unary_unary(
-                '/proto.AudioService/AddUserVoice',
+                '/pb.audio.v1.AudioService/AddUserVoice',
                 request_serializer=proto_dot_audio__pb2.AddUserVoiceRequest.SerializeToString,
                 response_deserializer=proto_dot_audio__pb2.AddUserVoiceResponse.FromString,
                 _registered_method=True)
         self.TTS = channel.unary_unary(
-                '/proto.AudioService/TTS',
+                '/pb.audio.v1.AudioService/TTS',
                 request_serializer=proto_dot_audio__pb2.TTSRequest.SerializeToString,
                 response_deserializer=proto_dot_audio__pb2.TTSResponse.FromString,
                 _registered_method=True)
         self.VoiceConversion = channel.unary_unary(
-                '/proto.AudioService/VoiceConversion',
+                '/pb.audio.v1.AudioService/VoiceConversion',
                 request_serializer=proto_dot_audio__pb2.VoiceConversionRequest.SerializeToString,
                 response_deserializer=proto_dot_audio__pb2.VoiceConversionResponse.FromString,
                 _registered_method=True)
         self.ASR = channel.unary_unary(
-                '/proto.AudioService/ASR',
+                '/pb.audio.v1.AudioService/ASR',
                 request_serializer=proto_dot_audio__pb2.ASRRequest.SerializeToString,
                 response_deserializer=proto_dot_audio__pb2.ASRResponse.FromString,
                 _registered_method=True)
@@ -108,9 +108,9 @@ def add_AudioServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'proto.AudioService', rpc_method_handlers)
+            'pb.audio.v1.AudioService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('proto.AudioService', rpc_method_handlers)
+    server.add_registered_method_handlers('pb.audio.v1.AudioService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -131,7 +131,7 @@ class AudioService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/proto.AudioService/AddUserVoice',
+            '/pb.audio.v1.AudioService/AddUserVoice',
             proto_dot_audio__pb2.AddUserVoiceRequest.SerializeToString,
             proto_dot_audio__pb2.AddUserVoiceResponse.FromString,
             options,
@@ -158,7 +158,7 @@ class AudioService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/proto.AudioService/TTS',
+            '/pb.audio.v1.AudioService/TTS',
             proto_dot_audio__pb2.TTSRequest.SerializeToString,
             proto_dot_audio__pb2.TTSResponse.FromString,
             options,
@@ -185,7 +185,7 @@ class AudioService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/proto.AudioService/VoiceConversion',
+            '/pb.audio.v1.AudioService/VoiceConversion',
             proto_dot_audio__pb2.VoiceConversionRequest.SerializeToString,
             proto_dot_audio__pb2.VoiceConversionResponse.FromString,
             options,
@@ -212,7 +212,7 @@ class AudioService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/proto.AudioService/ASR',
+            '/pb.audio.v1.AudioService/ASR',
             proto_dot_audio__pb2.ASRRequest.SerializeToString,
             proto_dot_audio__pb2.ASRResponse.FromString,
             options,
