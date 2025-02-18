@@ -15,16 +15,16 @@ class AudioService(audio_pb2_grpc.AudioServiceServicer):
         # 读取许多声音文件，处理成一个，可能需要统一格式
         for file_name in request.audio_list:
             print(f"Processing {file_name}")
-            self.oss_client.download_file(f"origin/{file_name}", f"./file/{file_name}")
+            # self.oss_client.download_file(f"origin/{file_name}", f"./file/{file_name}")
 
         # 处理上传的音频 生成新的音频文件
 
         # 删除旧文件
-        for file_name in request.audio_list:
-            self.oss_client.delete_file(f"origin/{file_name}")
+        # for file_name in request.audio_list:
+        #     self.oss_client.delete_file(f"origin/{file_name}")
 
         # 生成新的文件名
-        newName = str(ulid.ULID())  # 保证唯一
+        newName = str(ulid.ULID()) # 保证唯一
         print(newName)
         # 上传处理后的声音文件
         # 可能需要加上 格式 后缀
@@ -49,7 +49,6 @@ class AudioService(audio_pb2_grpc.AudioServiceServicer):
         srt_file = f"{request.audio_filename}.srt"
         # 这里添加实际的语音识别逻辑
         return audio_pb2.ASRResponse(srt_filename=srt_file)
-
 
 def serve():
     # 创建 OSS 客户端
