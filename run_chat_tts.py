@@ -5,28 +5,30 @@ from Chat.norm import Normalizer
 import os
 import numpy as np
 import scipy.io.wavfile as wav
+from pathlib import Path
+import torchaudio
 
 class ChatTTS:
-    def __init__(self, config_path, model_path, device=None):
+    def __init__(self, device='auto'):
         """
         Args:
             config_path (str): 配置文件路径。
             model_path (str): 模型文件路径。
             device (str): 设备类型，'cuda' 或 'cpu'，默认为自动选择。
         """
-        self.config_path = config_path
-        self.model_path = model_path
-        self.device = device if device else torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # self.config_path = config_path
+        # self.model_path = model_path
+        self.device = torch.device(device) if device != 'auto' else torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         self.chat = Chat()
-        self.normalizer = Normalizer(config_path +"/homophones_map.json")
+        # self.normalizer = Normalizer(config_path +"/homophones_map.json")
 
-        self.output_dir = "assets/tts_audio"
+        self.output_dir = Path("assets/output/tts_audio")
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
     def load(self):
-        success = self.chat.load(source="local", custom_path=self.model_path)
+        success = self.chat.load()
         if not success:
             raise RuntimeError("Failed to load the model.")
         print("Model loaded successfully.")
@@ -44,20 +46,36 @@ class ChatTTS:
         Returns:
             audio_data (np.ndarray): 生成的语音数据。
         """
-        norm_text = self.normalizer(text)
+        # norm_text = self.normalizer(text)
         
-        if refine_prompt:
-            norm_text += " " + refine_prompt
+        # if refine_prompt:
+        #     norm_text += " " + refine_prompt
 
-        audio_data = self.chat.infer(
-            text=norm_text, 
-            lang=lang, 
-            params_infer_code={"spk_smp": speaker_id} 
-        )
+        # audio_data = self.chat.infer(
+        #     text=norm_text, 
+        #     lang=lang, 
+        #     params_infer_code={"spk_smp": speaker_id} 
+        # )
 
-        audio_path = os.path.join(self.output_dir, audio_name)
+        if refine_prompt is not None:
+            params_refine_text = Chat.RefineTextParams(
+                prompt=refine_prompt,
+            )
+            audio_data = self.chat.infer(
+                text, 
+                lang=lang,
+                params_refine_text=params_refine_text
+            )
+        else:
+            audio_data = self.chat.infer(
+                text, 
+                lang=lang
+            )
 
-        wav.write(audio_path, 44100, audio_data.astype(np.int16))
+        audio_path = self.output_dir / audio_name
+
+        # wav.write(audio_path, 44100, audio_data.astype(np.int16))
+        torchaudio.save(audio_path, torch.from_numpy(audio_data[0]).unsqueeze(0), 24000)
 
         print(f"Audio saved to {audio_path}")
         
@@ -67,11 +85,11 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 
 sys.path.append(os.path.join(current_dir, 'Chat'))
 
-from chat_tts_model import ChatTTS  
+# from chat_tts_model import ChatTTS  
 
 if __name__ == "__main__":
 
-    chat_tts = ChatTTS(config_path="C:\chat\Chat\config", model_path="C:\chat\Chat\model")
+    chat_tts = ChatTTS()
     
     chat_tts.load()
     

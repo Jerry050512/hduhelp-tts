@@ -2,6 +2,7 @@ __pycache__/
 .venv/
 
 assets/
+asset/
 
 .ipynb_checkpoints/
 basetts_outputs_use_bert/
