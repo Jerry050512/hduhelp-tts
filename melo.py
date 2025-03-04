@@ -2,6 +2,7 @@ from MeloTTS.melo.api import TTS
 from pathlib import Path
 import os
 import torch
+from utils.download_all_tts_model import download_all_melo_model
 
 class Melo:
     def __init__(self):
@@ -28,6 +29,14 @@ class Melo:
             print("Model unloaded.")
         else:
             print("Model was not loaded, nothing to unload.")
+    
+    def show_speakers(self):
+        if self.speaker_ids is None:
+            print("No speakers available. Load model first.")
+        else:
+            print("Available speakers:")
+            for speaker, speaker_id in self.speaker_ids.items():
+                print(f"Speaker: {speaker}, ID: {speaker_id}")
 
     def infer(
             self, 
@@ -81,8 +90,9 @@ class Melo:
     
 if __name__ == "__main__":
     model = Melo()
-    model.load()
-    for i in range(10):
-        model.infer(f"Hello, world! {i}th sentence.", audio_name="hello_world")
-    model.load('ZH')
-    model.infer("你好，我是MeloTTS生成的语音。")
+    # model.load()
+    # for i in range(10):
+    #     model.infer(f"Hello, world! {i}th sentence.", audio_name="hello_world")
+    download_all_melo_model(model)
+    # model.load('EN_V2')
+    # model.infer("你好，我是MeloTTS生成的语音。", audio_name='hello_melo')
