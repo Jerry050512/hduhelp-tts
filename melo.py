@@ -3,14 +3,16 @@ from pathlib import Path
 import os
 import torch
 from utils.download_all_tts_model import download_all_melo_model
+import glob
+from os.path import join, basename, splitext
 
 class Melo:
-    def __init__(self):
+    def __init__(self, sample_rate=44100, output_dir="assets/output/tts_audio", language=None):
         self.model: TTS | None = None
         self.speaker_ids: dict | None = None
-        self.sample_rate = 44100
-        self.output_dir = Path("assets/output/tts_audio")
-        self.language: str | None = None
+        self.sample_rate = sample_rate
+        self.output_dir = output_dir
+        self.language: str | None = language
 
     def load(self, language='EN', device='auto'):
         self.model = TTS(language=language, device=device)
@@ -89,10 +91,17 @@ class Melo:
         return self.model.tts_to_file(text, speaker_id, speed=speed, output_path=output_path)
     
 if __name__ == "__main__":
-    model = Melo()
+    model = Melo(output_dir=Path("assets/processed/ppt"))
     # model.load()
     # for i in range(10):
     #     model.infer(f"Hello, world! {i}th sentence.", audio_name="hello_world")
-    download_all_melo_model(model)
+    # download_all_melo_model(model)
     # model.load('EN_V2')
     # model.infer("你好，我是MeloTTS生成的语音。", audio_name='hello_melo')
+
+    model.load('ZH')
+    for text_file in glob.glob("assets/processed/ppt/*.txt"):
+        with open(text_file, 'r', encoding='utf-8') as f:
+            text = f.read()
+        print(f"Infering: \n{text}\n")
+        model.infer(text, audio_name=splitext(basename(text_file))[0])

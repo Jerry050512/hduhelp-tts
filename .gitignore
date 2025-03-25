@@ -3,6 +3,9 @@ __pycache__/
 
 assets/
 asset/
+*.pptx
+*.test
+*.bak
 
 .ipynb_checkpoints/
 basetts_outputs_use_bert/
