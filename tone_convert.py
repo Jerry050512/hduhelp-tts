@@ -93,11 +93,11 @@ if __name__ == '__main__':
 
     print("Getting speaker embeddings...")
     tc.get_se(
-        ref_audio_file='OpenVoice/resources/demo_speaker0.mp3', 
+        ref_audio_file='assets/demo/ref-1.mp3', 
         # src_audio_file='assets/tts_audio/hello_world.wav', 
-        speaker_key='en-us'
+        speaker_key='zh'
     )
-    print("Saving speaker embeddings...")
-    tc.save_ref_se()
+    # print("Saving speaker embeddings...")
+    # tc.save_ref_se()
     print("Converting tone color...")
-    tc.convert_tone_color('assets/output/tts_audio/hello_world.wav')
+    tc.convert_tone_color('assets/processed/ppt/output.wav', output_path='assets/demo/converted.wav')

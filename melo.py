@@ -11,7 +11,7 @@ class Melo:
         self.model: TTS | None = None
         self.speaker_ids: dict | None = None
         self.sample_rate = sample_rate
-        self.output_dir = output_dir
+        self.output_dir = output_dir if isinstance(output_dir, Path) else Path(output_dir)
         self.language: str | None = language
 
     def load(self, language='EN', device='auto'):
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     # model.infer("你好，我是MeloTTS生成的语音。", audio_name='hello_melo')
 
     model.load('ZH')
-    for text_file in glob.glob("assets/processed/ppt/*.txt"):
+    for text_file in glob.glob("assets/processed/ppt/lecture-*.txt"):
         with open(text_file, 'r', encoding='utf-8') as f:
             text = f.read()
         print(f"Infering: \n{text}\n")
